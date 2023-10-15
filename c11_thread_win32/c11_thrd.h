@@ -49,6 +49,7 @@
 #include <windows.h>
 
 #include <stdbool.h>
+#include <time.h>
 
 #include "c11_thrd_config.h"
 #include "c11_thrd_common.h"
@@ -93,7 +94,7 @@ extern thrd_t thrd_current(void);
 extern int thrd_detach(thrd_t thr);
 extern int thrd_equal(thrd_t lhs, thrd_t rhs);
 extern void thrd_exit(int rc);
-extern int thrd_join(thrd_t thr, int* rc); // TODO:
+extern int thrd_join(thrd_t thr, int* rc);
 extern int thrd_sleep(const struct timespec* duration, struct timespec* remaining);
 extern void thrd_yield(void);
 
@@ -101,3 +102,6 @@ extern void thrd_yield(void);
 	extern int thrd_priority_set(thrd_t thread, int priority);
 #endif
 
+#ifdef THREAD_NAME_SET_ENABLE
+	extern int thrd_name_set(thrd_t thr, char* pName);
+#endif

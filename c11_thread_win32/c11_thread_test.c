@@ -86,7 +86,7 @@ cnd_t gCnd;
 mtx_t gCndMtx;
 thrd_t gCndTestThread[3];
 
-int main(int argc, void* argv[])
+void c11ThreadTest(void)
 {
 	thrd_lib_init();
 

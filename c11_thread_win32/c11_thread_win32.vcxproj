@@ -21,13 +21,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -58,7 +58,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);RTOS_SIMULATION_EXTENSION</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\mailbox\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+        $(ProjectDir);$(ProjectDir)\mailbox\
+      </AdditionalIncludeDirectories>
       <CompileAsManaged>false</CompileAsManaged>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -79,6 +81,7 @@
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>false</ExceptionHandling>
       <AdditionalIncludeDirectories>
+        $(ProjectDir);$(ProjectDir)\mailbox\
       </AdditionalIncludeDirectories>
       <CompileAsManaged>false</CompileAsManaged>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -92,15 +95,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="c11_cnd.c" />
-    <ClCompile Include="c11_cnd_old.c" />
     <ClCompile Include="c11_mtx.c" />
-    <ClCompile Include="c11_mtx_old.c" />
     <ClCompile Include="c11_thrd.c" />
     <ClCompile Include="c11_thread_test.c">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="mailbox\mailbox.c" />
+    <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c11_cnd.h" />

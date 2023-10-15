@@ -48,6 +48,8 @@
 
 #include <windows.h>
 
+#include <time.h>
+
 #include "c11_thrd_config.h"
 #include "c11_thrd_common.h"
 
@@ -55,15 +57,9 @@
 /*
  * typedefs
  */
-#ifdef WIN32_NATIVE_CONDITION_VARIABLE
-	typedef struct {
-		CRITICAL_SECTION criticalSection;
-	} mtx_t;
-#else
-	typedef struct {
-		HANDLE handle;
-	} mtx_t;
-#endif
+typedef struct {
+	CRITICAL_SECTION criticalSection;
+} mtx_t;
 
 
 /*

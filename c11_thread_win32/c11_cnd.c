@@ -54,9 +54,6 @@
 #include "c11_cnd.h"
 
 
-#ifdef WIN32_NATIVE_CONDITION_VARIABLE
-
-
 /*
  * forward declarations
  */
@@ -215,6 +212,4 @@ void cnd_destroy(cnd_t* pCond)
 {
 	// 何も行う必要はない.
 }
-
-#endif // WIN32_NATIVE_CONDITION_VARIABLE
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (c) 2021 - 2023 Suzuki Satoshi
+ * Copyright (c) 2021-2023 Suzuki Satoshi
  *
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the use of
@@ -50,11 +50,6 @@
 /*
  * defines
  */
-#define WIN32_NATIVE_CONDITION_VARIABLE
+#define THREAD_NAME_SET_ENABLE
 #undef RTOS_SIMULATION_ENABLE
-
-
-#ifndef WIN32_NATIVE_CONDITION_VARIABLE
-	#define C11_THREAD_WIN32__THREAD_NUM_MAX 256
-#endif
 

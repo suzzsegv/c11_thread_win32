@@ -52,9 +52,6 @@
 #include "c11_mtx.h"
 
 
-#ifdef WIN32_NATIVE_CONDITION_VARIABLE
-
-
 /*
  * forward declarations
  */
@@ -207,6 +204,4 @@ void mtx_destroy(mtx_t* pMutex)
 {
 	DeleteCriticalSection(&pMutex->criticalSection);
 }
-
-#endif // WIN32_NATIVE_CONDITION_VARIABLE
 

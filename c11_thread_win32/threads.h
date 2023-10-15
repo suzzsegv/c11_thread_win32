@@ -1,6 +1,6 @@
 ﻿/*
  * threads.h - C11 standard (ISO/IEC 9899:2011): Thread support library for Win32
- *             Interface header file
+ *             Interface header file.
  */
 
 /*

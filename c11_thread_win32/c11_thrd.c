@@ -47,6 +47,7 @@
 #include <windows.h>
 #include <process.h>
 #include <processthreadsapi.h>
+#include <stringapiset.h>
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -369,6 +370,31 @@ int thrd_priority_set(thrd_t thr, int priority)
 	success = SetThreadPriority(pThrdWin32->handle, priority);
 	if (success == FALSE) {
 		printf("%s(): SetThreadPriority() error: %d\n", __func__, GetLastError());
+		return thrd_error;
+	}
+
+	return thrd_success;
+}
+#endif
+
+#ifdef THREAD_NAME_SET_ENABLE
+/*!
+ * thrd_name_set - スレッド名の設定
+ *
+ * @return thrd_success or thrd_error
+ */
+int thrd_name_set(thrd_t thr, char* pName)
+{
+	C11ThrdWin32* pThrdWin32 = (C11ThrdWin32*)thr;
+	wchar_t wName[32];
+	int len = MultiByteToWideChar(CP_ACP, 0, pName, -1, &wName[0], (sizeof(wName)/ sizeof(wchar_t)));
+	if(len == 0){
+		return thrd_error;
+	}
+
+	HRESULT hr = SetThreadDescription(pThrdWin32->handle, &wName[0]);
+	if (FAILED(hr)) {
+		printf("%s(): SetThreadDescription() error: %d\n", __func__, hr);
 		return thrd_error;
 	}
 

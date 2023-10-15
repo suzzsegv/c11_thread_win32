@@ -48,6 +48,8 @@
 
 #include <windows.h>
 
+#include <time.h>
+
 #include "c11_thrd_config.h"
 #include "c11_thrd_common.h"
 #include "c11_mtx.h"
@@ -56,18 +58,9 @@
 /*
  * typedefs
  */
-#ifdef WIN32_NATIVE_CONDITION_VARIABLE
-	typedef struct {
-		CONDITION_VARIABLE conditionVariable;
-	} cnd_t;
-#else
-	typedef struct {
-		HANDLE handle;
-		mtx_t cnd_mtx;
-		int waiter_count;
-		BOOL lastSignalIsBroadcast;
-	} cnd_t;
-#endif
+typedef struct {
+	CONDITION_VARIABLE conditionVariable;
+} cnd_t;
 
 /*
  * externals
