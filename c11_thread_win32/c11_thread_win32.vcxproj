@@ -110,6 +110,7 @@
     <ClInclude Include="c11_thrd.h" />
     <ClInclude Include="c11_thrd_common.h" />
     <ClInclude Include="c11_thrd_config.h" />
+    <ClInclude Include="c11_thrd_win32_internal.h" />
     <ClInclude Include="mailbox\mailbox.h" />
     <ClInclude Include="mailbox\mailboxPrivate.h" />
     <ClInclude Include="threads.h" />

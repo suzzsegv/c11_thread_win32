@@ -52,6 +52,8 @@
 #include "timeSpecCalcLib.h"
 
 #include "c11_cnd.h"
+#include "c11_thrd_common.h"
+#include "c11_thrd_win32_internal.h"
 
 
 /*
@@ -78,7 +80,14 @@ void cnd_destroy(cnd_t* pCond);
  */
 int cnd_init(cnd_t* pCond)
 {
-	InitializeConditionVariable(&pCond->conditionVariable);
+	C11CndWin32* pCndWin32 = (C11CndWin32*)malloc(sizeof(C11CndWin32));
+	if (pCndWin32 == NULL) {
+		return thrd_nomem;
+	}
+
+	InitializeConditionVariable(&pCndWin32->conditionVariable);
+
+	*pCond = (cnd_t)pCndWin32;
 
 	return thrd_success;
 }
@@ -95,7 +104,9 @@ int cnd_init(cnd_t* pCond)
  */
 int cnd_signal(cnd_t* pCond)
 {
-	WakeConditionVariable(&pCond->conditionVariable);
+	C11CndWin32* pCndWin32 = (C11CndWin32*)(*pCond);
+
+	WakeConditionVariable(&pCndWin32->conditionVariable);
 
 	return thrd_success;
 }
@@ -112,7 +123,9 @@ int cnd_signal(cnd_t* pCond)
  */
 int cnd_broadcast(cnd_t* pCond)
 {
-	WakeAllConditionVariable(&pCond->conditionVariable);
+	C11CndWin32* pCndWin32 = (C11CndWin32*)(*pCond);
+
+	WakeAllConditionVariable(&pCndWin32->conditionVariable);
 
 	return thrd_success;
 }
@@ -135,11 +148,13 @@ int cnd_broadcast(cnd_t* pCond)
  */
 int cnd_wait(cnd_t* pCond, mtx_t* pMutex)
 {
+	C11CndWin32* pCndWin32 = (C11CndWin32*)(*pCond);
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
 	BOOL success;
 
 	success = SleepConditionVariableCS(
-		&pCond->conditionVariable,
-		&pMutex->criticalSection,
+		&pCndWin32->conditionVariable,
+		&pMtxWin32->criticalSection,
 		INFINITE);
 
 	if (success == FALSE) {
@@ -171,6 +186,8 @@ int cnd_wait(cnd_t* pCond, mtx_t* pMutex)
  */
 int cnd_timedwait(cnd_t* pCond, mtx_t* pMutex, const struct timespec* pTimeoutTs)
 {
+	C11CndWin32* pCndWin32 = (C11CndWin32*)(*pCond);
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
 	struct timespec currentTs;
 
 	if (timespec_get(&currentTs, TIME_UTC) == 0) {
@@ -182,8 +199,8 @@ int cnd_timedwait(cnd_t* pCond, mtx_t* pMutex, const struct timespec* pTimeoutTs
 		timeoutMs = 0;
 	}
 	BOOL success = SleepConditionVariableCS(
-		&pCond->conditionVariable,
-		&pMutex->criticalSection,
+		&pCndWin32->conditionVariable,
+		&pMtxWin32->criticalSection,
 		(DWORD)timeoutMs);
 
 	if (success == TRUE) {
@@ -210,6 +227,10 @@ int cnd_timedwait(cnd_t* pCond, mtx_t* pMutex, const struct timespec* pTimeoutTs
  */
 void cnd_destroy(cnd_t* pCond)
 {
-	// 何も行う必要はない.
+	C11CndWin32* pCndWin32 = (C11CndWin32*)(*pCond);
+
+	// ConditionVariable に削除 API は存在しない。
+
+	free((void*)pCndWin32);
 }
 

@@ -52,11 +52,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "timeSpecCalcLib.h"
 #include "c11_mtx.h"
 #include "c11_thrd.h"
+#include "c11_thrd_common.h"
+#include "c11_thrd_win32_internal.h"
 
 
 /*

@@ -43,6 +43,8 @@
  *     3. ソースの頒布物から、この表示を削除したり、表示の内容を変更したりしてはなりません。
  */
 
+#include <windows.h>
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,6 +53,8 @@
 #include "mailbox\mailbox.h"
 #include "threads.h"
 #include "timeSpecCalcLib.h"
+#include "c11_thrd_win32_internal.h"
+
 
 void c11ThrdStartAndExitTest(void);
 void startAndExitThreadEntry(void* arg);
@@ -248,6 +252,12 @@ void c11CondTest(void)
 			assert(rc == thrd_success);
 			assert(thrdRc == thrd_success);
 		}
+	}
+
+	// cnd_destroy() テスト
+	{
+		printf("\n--- cnd_destroy() Test ---\n");
+		cnd_destroy(&gCnd);
 	}
 
 	printf("=== %s(): exit.\n", __func__);

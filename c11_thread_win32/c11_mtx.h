@@ -46,8 +46,6 @@
 
 #pragma once
 
-#include <windows.h>
-
 #include <time.h>
 
 #include "c11_thrd_config.h"
@@ -57,9 +55,7 @@
 /*
  * typedefs
  */
-typedef struct {
-	CRITICAL_SECTION criticalSection;
-} mtx_t;
+typedef uintptr_t mtx_t;
 
 
 /*

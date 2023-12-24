@@ -46,21 +46,17 @@
 
 #pragma once
 
-#include <windows.h>
-
 #include <time.h>
 
 #include "c11_thrd_config.h"
-#include "c11_thrd_common.h"
 #include "c11_mtx.h"
+#include "c11_thrd_common.h"
 
 
 /*
  * typedefs
  */
-typedef struct {
-	CONDITION_VARIABLE conditionVariable;
-} cnd_t;
+typedef uintptr_t cnd_t;
 
 /*
  * externals

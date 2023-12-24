@@ -47,9 +47,12 @@
 #include <windows.h>
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "c11_mtx.h"
+#include "c11_thrd_common.h"
+#include "c11_thrd_win32_internal.h"
 
 
 /*
@@ -82,7 +85,14 @@ void mtx_destroy(mtx_t* pMutex);
  */
 int mtx_init(mtx_t* pMutex, int type)
 {
-	InitializeCriticalSection(&pMutex->criticalSection);
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)malloc(sizeof(C11MtxWin32));
+	if (pMtxWin32 == NULL) {
+		return thrd_error;
+	}
+
+	InitializeCriticalSection(&pMtxWin32->criticalSection);
+
+	*pMutex = (mtx_t)pMtxWin32;
 
 	return thrd_success;
 }
@@ -101,7 +111,9 @@ int mtx_init(mtx_t* pMutex, int type)
  */
 int mtx_lock(mtx_t* pMutex)
 {
-	EnterCriticalSection(&pMutex->criticalSection);
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
+
+	EnterCriticalSection(&pMtxWin32->criticalSection);
 
 	return thrd_success;
 }
@@ -128,9 +140,10 @@ int mtx_lock(mtx_t* pMutex)
  */
 int mtx_timedlock(mtx_t* pMutex, const struct timespec* pTimeoutTs)
 {
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
 	BOOL success;
 
-	success = TryEnterCriticalSection(&pMutex->criticalSection);
+	success = TryEnterCriticalSection(&pMtxWin32->criticalSection);
 	while (success == FALSE) {
 		struct timespec currentTs;
 
@@ -138,11 +151,11 @@ int mtx_timedlock(mtx_t* pMutex, const struct timespec* pTimeoutTs)
 			return thrd_error;
 		}
 		if ((currentTs.tv_sec > pTimeoutTs->tv_sec)
-			|| ((currentTs.tv_sec == pTimeoutTs->tv_sec) && (currentTs.tv_nsec > pTimeoutTs->tv_nsec))) {
+		 || ((currentTs.tv_sec == pTimeoutTs->tv_sec) && (currentTs.tv_nsec > pTimeoutTs->tv_nsec))) {
 			return thrd_timedout;
 		}
 		Sleep(0);
-		success = TryEnterCriticalSection(&pMutex->criticalSection);
+		success = TryEnterCriticalSection(&pMtxWin32->criticalSection);
 	}
 
 	return thrd_success;
@@ -162,9 +175,10 @@ int mtx_timedlock(mtx_t* pMutex, const struct timespec* pTimeoutTs)
  */
 int mtx_trylock(mtx_t* pMutex)
 {
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
 	BOOL success;
 
-	success = TryEnterCriticalSection(&pMutex->criticalSection);
+	success = TryEnterCriticalSection(&pMtxWin32->criticalSection);
 	if (success == FALSE) {
 		return thrd_busy;
 	}
@@ -185,7 +199,9 @@ int mtx_trylock(mtx_t* pMutex)
  */
 int mtx_unlock(mtx_t* pMutex)
 {
-	LeaveCriticalSection(&pMutex->criticalSection);
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
+
+	LeaveCriticalSection(&pMtxWin32->criticalSection);
 
 	return thrd_success;
 }
@@ -202,6 +218,10 @@ int mtx_unlock(mtx_t* pMutex)
  */
 void mtx_destroy(mtx_t* pMutex)
 {
-	DeleteCriticalSection(&pMutex->criticalSection);
+	C11MtxWin32* pMtxWin32 = (C11MtxWin32*)(*pMutex);
+
+	DeleteCriticalSection(&pMtxWin32->criticalSection);
+	free((void*)pMtxWin32);
 }
+
 
